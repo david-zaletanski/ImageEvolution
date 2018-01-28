@@ -1,0 +1,18 @@
+C:\Users\MORPHEUS\AppData\Local\Temporary Projects\WindowsFormsApplication1\bin\Debug\WindowsFormsApplication1.exe
+C:\Users\MORPHEUS\AppData\Local\Temporary Projects\WindowsFormsApplication1\bin\Debug\WindowsFormsApplication1.pdb
+C:\Users\MORPHEUS\AppData\Local\Temporary Projects\WindowsFormsApplication1\obj\x86\Debug\ResolveAssemblyReference.cache
+C:\Users\MORPHEUS\AppData\Local\Temporary Projects\WindowsFormsApplication1\obj\x86\Debug\WindowsFormsApplication1.frmMain.resources
+C:\Users\MORPHEUS\AppData\Local\Temporary Projects\WindowsFormsApplication1\obj\x86\Debug\WindowsFormsApplication1.Properties.Resources.resources
+C:\Users\MORPHEUS\AppData\Local\Temporary Projects\WindowsFormsApplication1\obj\x86\Debug\GenerateResource.read.1.tlog
+C:\Users\MORPHEUS\AppData\Local\Temporary Projects\WindowsFormsApplication1\obj\x86\Debug\GenerateResource.write.1.tlog
+C:\Users\MORPHEUS\AppData\Local\Temporary Projects\WindowsFormsApplication1\obj\x86\Debug\WindowsFormsApplication1.exe
+C:\Users\MORPHEUS\AppData\Local\Temporary Projects\WindowsFormsApplication1\obj\x86\Debug\WindowsFormsApplication1.pdb
+C:\Users\MORPHEUS\documents\visual studio 2010\Projects\ImageEvolution\ImageEvolution\bin\Debug\ImageEvolution.exe
+C:\Users\MORPHEUS\documents\visual studio 2010\Projects\ImageEvolution\ImageEvolution\bin\Debug\ImageEvolution.pdb
+C:\Users\MORPHEUS\documents\visual studio 2010\Projects\ImageEvolution\ImageEvolution\obj\x86\Debug\ResolveAssemblyReference.cache
+C:\Users\MORPHEUS\documents\visual studio 2010\Projects\ImageEvolution\ImageEvolution\obj\x86\Debug\WindowsFormsApplication1.frmMain.resources
+C:\Users\MORPHEUS\documents\visual studio 2010\Projects\ImageEvolution\ImageEvolution\obj\x86\Debug\WindowsFormsApplication1.Properties.Resources.resources
+C:\Users\MORPHEUS\documents\visual studio 2010\Projects\ImageEvolution\ImageEvolution\obj\x86\Debug\GenerateResource.read.1.tlog
+C:\Users\MORPHEUS\documents\visual studio 2010\Projects\ImageEvolution\ImageEvolution\obj\x86\Debug\GenerateResource.write.1.tlog
+C:\Users\MORPHEUS\documents\visual studio 2010\Projects\ImageEvolution\ImageEvolution\obj\x86\Debug\ImageEvolution.exe
+C:\Users\MORPHEUS\documents\visual studio 2010\Projects\ImageEvolution\ImageEvolution\obj\x86\Debug\ImageEvolution.pdb
