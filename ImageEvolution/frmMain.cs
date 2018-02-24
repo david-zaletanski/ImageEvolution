@@ -140,6 +140,17 @@ namespace WindowsFormsApplication1
 
         private void evolutionControlBtn_Click(object sender, EventArgs e)
         {
+            // Check That Directory To Save Images Exists / Is Valid
+            if (saveImagesChkBox.Checked)
+            {
+                string saveLocation = saveLocationTxtBox.Text;
+                if (saveLocation == null || saveLocation.Length == 0 ||
+                    !System.IO.Directory.Exists(saveLocation))
+                {
+                    MessageBox.Show("Please select valid image save location or disable image capture.");
+                    return;
+                }
+            }
             // Evolution Control button.
             if (evolutionControlBtn.Text == "Begin")
             {

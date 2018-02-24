@@ -5,21 +5,22 @@ using System.Text;
 using System.Drawing;
 using System.Threading;
 using System.Threading.Tasks;
+using net.dzale.ImageEvolution.Imaging;
 
-namespace WindowsFormsApplication1
+namespace net.dzale.ImageEvolution
 {
     class ImageEvolutionChamber
     {
         #region Class Variables
 
-        private string PathToSourceImage = "";
         public Image SourceImage { get; set; }
         public int ImageWidth { get; set; }
         public int ImageHeight { get; set; }
 
-        private double MutationRate;
         private int NumChildren;
+        private double MutationRate;
 
+        private string PathToSourceImage = "";
         private bool SaveImages = false;
         private string SaveImageLocation = "";
         private int SaveFrequency = 0;
@@ -28,10 +29,14 @@ namespace WindowsFormsApplication1
 
         #region Constructor
 
+        /// <summary>
+        /// Creates an ImageEvolutionChamber, which stores evolutionary parameters, and executes the generation simulator loop indefinitely on a separate thread.
+        /// </summary>
         public ImageEvolutionChamber()
         {
             SourceImage = null;
         }
+
         public ImageEvolutionChamber(int imgWidth, int imgHeight, string src)
         {
             LoadSourceImage(src,imgWidth,imgHeight);
@@ -41,27 +46,51 @@ namespace WindowsFormsApplication1
 
         #region Thread Controls
 
-        private Thread t;
-        private bool running = false;
-        private object locker = new object();
+        private Thread t;                       // The thread that will run the evolution simulator.
+        private bool running = false;           // Evolution simulator loop thread checks this variable each generation, ending if it is set to false.
+        private object locker = new object();   // Used for thread-safe instance variable access.
 
+        /// <summary>
+        /// Initializes evolution parameters and starts the Image Evolution loop thread, which will continue simulating generation after generation. 
+        /// </summary>
+        /// <param name="mutationRate"></param>
+        /// <param name="numChildren"></param>
+        /// <param name="saveImageLocation"></param>
+        /// <param name="saveFrequency"></param>
+        /// <param name="saveImages"></param>
         public void Begin(double mutationRate, int numChildren, string saveImageLocation, int saveFrequency, bool saveImages)
         {
+            // Do some validations.
             if (SourceImage == null)
             {
-                IEvo.Output("ERR: Cannot begin evolution without a source image!");
+                IEvo.Output("[Evolution Chamber] ERROR: Cannot begin evolution without a source image!");
                 return;
             }
-            IEvo.Output("Beginning image evolution simulator:");
+            if (mutationRate <= 0.0 || mutationRate >= 1.0)
+            {
+                IEvo.Output("[Evolution Chamber] ERROR: Mutation rate ("+mutationRate+") must be a value between 0.00 and 1.00 (non-inclusive).");
+                return;
+            }
+            if (saveImages && !System.IO.Directory.Exists(saveImageLocation))
+            {
+                IEvo.Output("[Evolution Chamber] ERROR: Image save directory '"+saveImageLocation+"' does not exist!");
+                return;
+            }
+            if (saveImages && saveFrequency <= 0)
+            {
+                IEvo.Output("[Evolution Chamber] ERROR: Image save frequency ("+saveFrequency+") must be greater than 0.");
+                return;
+            }
+
+            // Output Parameters to Log
+            IEvo.Output("Beginning the Image evolution simulator...");
             IEvo.Output("Mutation Rate:\t" + mutationRate.ToString());
             IEvo.Output("Number of Children:\t" + numChildren.ToString());
             MutationRate = mutationRate;
             NumChildren = numChildren;
-
             if (saveImages)
             {
-                IEvo.Output("Saving images every "+saveFrequency.ToString()+" generations to:");
-                IEvo.Output("'" + saveImageLocation + "'");
+                IEvo.Output("Saving images every "+saveFrequency.ToString()+" generations to '"+saveImageLocation+"'");
             }
             SaveImages = saveImages;
             SaveImageLocation = saveImageLocation;
@@ -70,11 +99,15 @@ namespace WindowsFormsApplication1
             currentGeneration = 0;
             bestImage = null;
 
+            // Create new thread and begin simulation.
             UpdateStatus("Running");
             t = new Thread(new ThreadStart(run));
             t.Start();
         }
 
+        /// <summary>
+        /// Stops the simulation, ending the evolution loop thread.
+        /// </summary>
         public void Stop()
         {
             lock (locker)
@@ -87,9 +120,12 @@ namespace WindowsFormsApplication1
             }
         }
 
-        // Thread
+        /// <summary>
+        /// Method that will be executed on the new thread. Contains the evolution loop, simulating generation after generation.
+        /// </summary>
         private void run()
         {
+            // Keep Image evolution simulator running until the "running" instance variable is set to false.
             running = true;
             bool keepthread = running;
             while (keepthread)
@@ -105,8 +141,9 @@ namespace WindowsFormsApplication1
 
         #region Evolution Functions
 
-        private GeneratedImage bestImage;
-        private int currentGeneration = 0;
+        private GeneratedImage bestImage;       // Temporary storage for the fittest image each generation.
+        private int currentGeneration = 0;      // The number of generations that have been simulated since the beginning.
+
         /// <summary>
         /// Every time this is executed a generation is created and the best fit (most like the source image) is chosen to move on to the next generation.
         /// </summary>
@@ -115,17 +152,16 @@ namespace WindowsFormsApplication1
             try
             {
                 DateTime start = DateTime.Now;
+
                 if (currentGeneration == 0)
-                    bestImage = CreateInitialGenerationParallel(NumChildren, SourceImage);
+                    bestImage = CreateInitialGenerationParallel(NumChildren, SourceImage);      // Randomly generates a starting image.
                 else
-                    bestImage = PerformMutationAndFindFittestParallel(bestImage, NumChildren, MutationRate, SourceImage);
+                    bestImage = PerformMutationAndFindFittestParallel(bestImage, NumChildren, MutationRate, SourceImage);   // "Breeds" a number of mutated child images, returning the fittest.
+
                 DateTime end = DateTime.Now;
                 IEvo.Output("Completed generation " + currentGeneration + " in " + end.Subtract(start).TotalMilliseconds + " ms.");
 
-                if (SaveImages && (currentGeneration % SaveFrequency == 0))
-                {
-                    bestImage.Source.Save(SaveImageLocation + "\\" + currentGeneration.ToString() + ".jpg", System.Drawing.Imaging.ImageFormat.Jpeg);
-                }
+                bestImage.Source.Save(SaveImageLocation + "\\" + currentGeneration.ToString() + ".jpg", System.Drawing.Imaging.ImageFormat.Jpeg);
 
                 currentGeneration++;
                 UpdateFittestGeneratedImage(bestImage.Source);
@@ -137,26 +173,42 @@ namespace WindowsFormsApplication1
             }
         }
 
+        /// <summary>
+        /// Creates the initial seed generation, completely randomly generating a number of children, and returning the fittest child to the parent Image.
+        /// </summary>
+        /// <param name="numSeeds">the number of children to randomly generate</param>
+        /// <param name="Template">the parent Image</param>
+        /// <returns>the fittest randomly generated child</returns>
         private GeneratedImage CreateInitialGeneration(int numSeeds, Image Template)
         {
             GeneratedImage fittestImage = null;
             try
             {
+                // Generate an initial "fittest" child to compare to.
                 fittestImage = new GeneratedImage();
                 fittestImage.RandomizeSourceImage(ImageWidth, ImageHeight, 1000);
                 double fittestDist = GetEuclideanDistance(fittestImage.Source, Template);
+
+                // Generate each child and see if it is fitter.
                 int complete = 0;
                 for(int i = 0; i < numSeeds; i++)
                 {
                     GeneratedImage t = new GeneratedImage();
                     t.RandomizeSourceImage(ImageWidth, ImageHeight, 1000);
+
                     Image ti = new Bitmap(Template);
                     double dist = BitmapImageComparison.GetEuclideanDistance(t.Source, ti);
+
                     if (dist < fittestDist)
                     {
                         fittestDist = dist;
                         fittestImage = t;
                     }
+                    else
+                    {
+                        ti.Dispose();
+                    }
+
                     complete++;
                     UpdateGenerationProgress(complete, numSeeds);
                 }
@@ -169,24 +221,40 @@ namespace WindowsFormsApplication1
             return fittestImage;
         }
 
+        /// <summary>
+        /// Creates a new generation of children, each having a chance of mutations, and returns the fittest child image.
+        /// </summary>
+        /// <param name="previousFittest">the fittest child from the previous generation</param>
+        /// <param name="numChildren">the number of children to have this generation</param>
+        /// <param name="mutationRate">the chance a child gene has to mutate</param>
+        /// <param name="Template">the source Image</param>
+        /// <returns></returns>
         private GeneratedImage PerformMutationAndFindFittest(GeneratedImage previousFittest, int numChildren, double mutationRate, Image Template)
         {
             GeneratedImage fittestImage = null;
             try
             {
+                // Save the fitness of the best of the previous generation as a way to prevent future generations from becoming even LESS fit.
                 fittestImage = previousFittest;
                 double fittestDist = GetEuclideanDistance(previousFittest.Source, Template);
+
                 for(int i = 0; i < numChildren; i++)
                 {
                     GeneratedImage t = new GeneratedImage(previousFittest);
                     t.Mutate(mutationRate);
+
                     Image ti = new Bitmap(Template);;
                     double dist = BitmapImageComparison.GetEuclideanDistance(t.Source, ti);
-                        if (dist < fittestDist)
-                        {
-                            fittestDist = dist;
-                            fittestImage = t;
-                        }
+                    if (dist < fittestDist)
+                    {
+                        fittestDist = dist;
+                        fittestImage = t;
+                    }
+                    else
+                    {
+                        ti.Dispose();
+                    }
+
                     UpdateGenerationProgress(i, numChildren);
                 }
             }

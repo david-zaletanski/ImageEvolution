@@ -50,6 +50,9 @@ namespace WindowsFormsApplication1
             bitA.UnlockBits(bdA);
             bitB.UnlockBits(bdB);
 
+            aArr = null;
+            bArr = null;
+
             return Math.Sqrt(dist);
         }
 

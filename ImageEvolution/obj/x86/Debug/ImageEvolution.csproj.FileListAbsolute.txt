@@ -16,3 +16,13 @@ C:\Users\MORPHEUS\documents\visual studio 2010\Projects\ImageEvolution\ImageEvol
 C:\Users\MORPHEUS\documents\visual studio 2010\Projects\ImageEvolution\ImageEvolution\obj\x86\Debug\GenerateResource.write.1.tlog
 C:\Users\MORPHEUS\documents\visual studio 2010\Projects\ImageEvolution\ImageEvolution\obj\x86\Debug\ImageEvolution.exe
 C:\Users\MORPHEUS\documents\visual studio 2010\Projects\ImageEvolution\ImageEvolution\obj\x86\Debug\ImageEvolution.pdb
+C:\dev\github-01-28-2018\ImageEvolution\ImageEvolution\obj\x86\Debug\ImageEvolution.exe
+C:\dev\github-01-28-2018\ImageEvolution\ImageEvolution\obj\x86\Debug\ImageEvolution.pdb
+C:\dev\github-01-28-2018\ImageEvolution\ImageEvolution\bin\Debug\ImageEvolution.exe
+C:\dev\github-01-28-2018\ImageEvolution\ImageEvolution\bin\Debug\ImageEvolution.pdb
+C:\dev\github-01-28-2018\ImageEvolution\ImageEvolution\obj\x86\Debug\ImageEvolution.csprojResolveAssemblyReference.cache
+C:\dev\github-01-28-2018\ImageEvolution\ImageEvolution\obj\x86\Debug\WindowsFormsApplication1.frmMain.resources
+C:\dev\github-01-28-2018\ImageEvolution\ImageEvolution\obj\x86\Debug\WindowsFormsApplication1.Properties.Resources.resources
+C:\dev\github-01-28-2018\ImageEvolution\ImageEvolution\obj\x86\Debug\ImageEvolution.csproj.GenerateResource.Cache
+C:\dev\Backups\github-01-28-2018\ImageEvolution\ImageEvolution\obj\x86\Debug\ImageEvolution.exe
+C:\dev\Backups\github-01-28-2018\ImageEvolution\ImageEvolution\obj\x86\Debug\ImageEvolution.pdb
