@@ -17,6 +17,8 @@ namespace net.dzale.ImageEvolution
         public int ImageWidth { get; set; }
         public int ImageHeight { get; set; }
 
+        public bool Running { get { return running; } }
+
         private int NumChildren;
         private double MutationRate;
 
@@ -305,6 +307,10 @@ namespace net.dzale.ImageEvolution
                             fittestDist = dist;
                             fittestImage = t;
                         }
+                        else
+                        {
+                            ti.Dispose();
+                        }
                         complete++;
                     }
                     UpdateGenerationProgress(complete, numSeeds);
@@ -359,6 +365,10 @@ namespace net.dzale.ImageEvolution
                         {
                             fittestDist = dist;
                             fittestImage = t;
+                        }
+                        else
+                        {
+                            ti.Dispose();
                         }
                         complete++;
                     }

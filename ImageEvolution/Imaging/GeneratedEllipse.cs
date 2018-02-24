@@ -4,20 +4,25 @@ using System.Linq;
 using System.Text;
 using System.Drawing;
 
-namespace WindowsFormsApplication1
+namespace net.dzale.ImageEvolution.Imaging
 {
+    /// <summary>
+    /// Represents a shaded, drawable, 2D ellipse.
+    /// </summary>
     class GeneratedEllipse
     {
         public int X, Y, Width, Height;
-        public Brush B;
+        public Color Color { get; private set; }
 
-        public GeneratedEllipse(int X, int Y, int Width, int Height, Color Color)
+        private Brush coloredBrush;
+
+        public GeneratedEllipse(int x, int y, int width, int height, Color color)
         {
-            this.X = X;
-            this.Y = Y;
-            this.Width = Width;
-            this.Height = Height;
-            B = new SolidBrush(Color);
+            this.X = x;
+            this.Y = y;
+            this.Width = width;
+            this.Height = height;
+            this.SetColor(color);
         }
 
         public GeneratedEllipse(GeneratedEllipse copy)
@@ -26,12 +31,19 @@ namespace WindowsFormsApplication1
             this.Y = copy.Y;
             this.Width = copy.Width;
             this.Height = copy.Height;
-            this.B = (Brush)copy.B.Clone();
+            this.SetColor(copy.Color);
         }
 
-        public void draw(Graphics g)
+        public void Draw(Graphics g)
         {
-            g.FillEllipse(B, X, Y, Width, Height);
+            g.FillEllipse(coloredBrush, X, Y, Width, Height);
         }
+
+        public void SetColor(Color c)
+        {
+            this.Color = c;
+            this.coloredBrush = new SolidBrush(this.Color);
+        }
+
     }
 }

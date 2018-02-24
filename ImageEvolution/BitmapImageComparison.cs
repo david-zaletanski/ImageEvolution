@@ -5,7 +5,7 @@ using System.Text;
 using System.Drawing;
 using System.Drawing.Imaging;
 
-namespace WindowsFormsApplication1
+namespace net.dzale.ImageEvolution
 {
     class BitmapImageComparison
     {

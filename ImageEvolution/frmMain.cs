@@ -8,13 +8,13 @@ using System.Text;
 using System.Windows.Forms;
 using System.Diagnostics;
 
-namespace WindowsFormsApplication1
+namespace net.dzale.ImageEvolution
 {
     public partial class frmMain : Form
     {
         #region Variables
 
-        ImageEvolutionChamber chamber;
+        private ImageEvolutionChamber chamber;      // Threaded program that actually executes the Image Evolution logic.
 
         #endregion
 
@@ -25,6 +25,7 @@ namespace WindowsFormsApplication1
             InitializeComponent();
             chamber = new ImageEvolutionChamber();
 
+            // Register events for UI updates
             chamber.FittestGeneratedImageUpdate += new ImageEvolutionChamber.ImageUpdateDelegate(chamber_FittestGeneratedImageUpdate);
             chamber.GenerationUpdate += new ImageEvolutionChamber.GenerationUpdateDelegate(chamber_GenerationUpdate);
             chamber.GenerationProgress += new ImageEvolutionChamber.GenerationProgressDelegate(chamber_GenerationProgress);
@@ -33,7 +34,7 @@ namespace WindowsFormsApplication1
 
         #endregion
 
-        #region Public Functions
+        #region Application And Logging Functions
 
         public void OnExit()
         {
@@ -57,7 +58,11 @@ namespace WindowsFormsApplication1
 
         #endregion
 
-        #region Event Handlers
+        #region UI - Status Updates and Event Handlers
+
+        /*
+                The following are thread-safe interface update calls.
+        */
 
         private delegate void statusUpdateDelegate(string status);
         void chamber_StatusUpdateEvent(string status)
@@ -120,7 +125,7 @@ namespace WindowsFormsApplication1
 
         #endregion
 
-        #region Control Events
+        #region UI - Controller
 
         private void loadSrcImgBtn_Click(object sender, EventArgs e)
         {
@@ -140,38 +145,90 @@ namespace WindowsFormsApplication1
 
         private void evolutionControlBtn_Click(object sender, EventArgs e)
         {
-            // Check That Directory To Save Images Exists / Is Valid
-            if (saveImagesChkBox.Checked)
-            {
-                string saveLocation = saveLocationTxtBox.Text;
-                if (saveLocation == null || saveLocation.Length == 0 ||
-                    !System.IO.Directory.Exists(saveLocation))
-                {
-                    MessageBox.Show("Please select valid image save location or disable image capture.");
-                    return;
-                }
-            }
-            // Evolution Control button.
+            // Starts or stops the Image Evolution thread.
             if (evolutionControlBtn.Text == "Begin")
             {
-                mutationRateTxtBox.ReadOnly = true;
-                numberOfChildrenTxtBox.ReadOnly = true;
-                saveAmtTxtBox.ReadOnly = true;
+                // Valid user input parameters.
+                double validMutationRate = 0.0;
+                int validNumberOfChildren = 0;
+                if (!Double.TryParse(mutationRateTxtBox.Text, out validMutationRate)
+                    || validMutationRate <= 0.00 || validMutationRate >= 1.00)
+                {
+                    MessageBox.Show("Mutation rate is not a valid decimal, value must be between 0.00 and 1.00 (exclusive).");
+                    return;
+                }
+                else if (!Int32.TryParse(numberOfChildrenTxtBox.Text, out validNumberOfChildren)
+                    || validNumberOfChildren <= 0)
+                {
+                    MessageBox.Show("Number of children is not a valid number, value must be greater than 0.");
+                    return;
+                }
+
+                // Check image saving parameters.
+                bool saveImages = saveImagesChkBox.Checked;
+                int validSaveInterval = 0;
+                string validSaveLocation = saveLocationTxtBox.Text;
+                if (saveImages)
+                {
+                    if (!isValidImageSaveLocation(validSaveLocation))
+                    {
+                        MessageBox.Show("Image save location is not a valid directory.");
+                        return;
+                    }
+                    if (!Int32.TryParse(saveAmtTxtBox.Text, out validSaveInterval)
+                        || validSaveInterval <= 0)
+                    {
+                        MessageBox.Show("Image save interval is not a valid number, value must be greater than 0.");
+                        return;
+                    }
+                }
+
+                setInputParametersReadOnly(true);
                 try
                 {
-                    chamber.Begin(Double.Parse(mutationRateTxtBox.Text), Int32.Parse(numberOfChildrenTxtBox.Text),saveLocationTxtBox.Text,Int32.Parse(saveAmtTxtBox.Text), saveImagesChkBox.Checked);
+                    chamber.Begin(validMutationRate, validNumberOfChildren, validSaveLocation, validSaveInterval, saveImages);
                     evolutionControlBtn.Text = "Stop";
                 }
                 catch (Exception ex)
                 {
-                    System.Windows.Forms.MessageBox.Show("Error starting evolution. This is likely due to invalid input.\n"+ex.Message);
+                    System.Windows.Forms.MessageBox.Show("Error starting Image Evolution. Check log for more information.");
+                    AddOutput("An error occurred starting Image Evolution:");
+                    AddOutput(ex.Message);
+                    AddOutput(ex.StackTrace);
                 }
             }
             else if (evolutionControlBtn.Text == "Stop")
             {
-                chamber.Stop();
-                evolutionControlBtn.Text = "Begin";
+                try {
+                    chamber.Stop();
+                    evolutionControlBtn.Text = "Begin";
+                    setInputParametersReadOnly(false);
+                } catch (Exception ex)
+                {
+                    AddOutput("An error occurred stopping Image Evolution:");
+                    AddOutput(ex.Message);
+                    AddOutput(ex.StackTrace);
+                }
             }
+        }
+
+        private void setInputParametersReadOnly(bool readOnly)
+        {
+            mutationRateTxtBox.ReadOnly = readOnly;
+            numberOfChildrenTxtBox.ReadOnly = readOnly;
+            saveAmtTxtBox.ReadOnly = readOnly;
+        }
+
+        private bool isValidImageSaveLocation(string saveLocation)
+        {
+            // Check That Directory To Save Images Exists / Is Valid
+            if (saveLocation == null || saveLocation.Length == 0 ||
+                !System.IO.Directory.Exists(saveLocation))
+            {
+                MessageBox.Show("Please select valid image save location or disable image capture.");
+                return false;
+            }
+            return true;
         }
 
         private void selectSaveLocation_Click(object sender, EventArgs e)

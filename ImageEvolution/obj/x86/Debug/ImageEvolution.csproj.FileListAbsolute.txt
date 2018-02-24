@@ -26,3 +26,7 @@ C:\dev\github-01-28-2018\ImageEvolution\ImageEvolution\obj\x86\Debug\WindowsForm
 C:\dev\github-01-28-2018\ImageEvolution\ImageEvolution\obj\x86\Debug\ImageEvolution.csproj.GenerateResource.Cache
 C:\dev\Backups\github-01-28-2018\ImageEvolution\ImageEvolution\obj\x86\Debug\ImageEvolution.exe
 C:\dev\Backups\github-01-28-2018\ImageEvolution\ImageEvolution\obj\x86\Debug\ImageEvolution.pdb
+C:\dev\Backups\github-01-28-2018\ImageEvolution\ImageEvolution\obj\x86\Debug\ImageEvolution.csprojResolveAssemblyReference.cache
+C:\dev\Backups\github-01-28-2018\ImageEvolution\ImageEvolution\obj\x86\Debug\net.dzale.ImageEvolution.frmMain.resources
+C:\dev\Backups\github-01-28-2018\ImageEvolution\ImageEvolution\obj\x86\Debug\WindowsFormsApplication1.Properties.Resources.resources
+C:\dev\Backups\github-01-28-2018\ImageEvolution\ImageEvolution\obj\x86\Debug\ImageEvolution.csproj.GenerateResource.Cache

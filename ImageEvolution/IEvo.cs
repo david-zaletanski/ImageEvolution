@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace WindowsFormsApplication1
+namespace net.dzale.ImageEvolution
 {
     class IEvo
     {

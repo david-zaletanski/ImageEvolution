@@ -47,14 +47,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BitmapImageComparison.cs" />
-    <Compile Include="GeneratedEllipse.cs" />
+    <Compile Include="Imaging\GeneratedEllipse.cs" />
     <Compile Include="frmMain.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="frmMain.Designer.cs">
       <DependentUpon>frmMain.cs</DependentUpon>
     </Compile>
-    <Compile Include="GeneratedImage.cs" />
+    <Compile Include="Imaging\GeneratedImage.cs" />
     <Compile Include="IEvo.cs" />
     <Compile Include="ImageEvolutionChamber.cs" />
     <Compile Include="Program.cs" />

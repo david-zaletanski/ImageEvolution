@@ -1,4 +1,4 @@
-﻿namespace WindowsFormsApplication1
+﻿namespace net.dzale.ImageEvolution
 {
     partial class frmMain
     {
